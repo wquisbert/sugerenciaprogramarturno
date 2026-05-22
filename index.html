@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Turnos - Modal con 10 Registros</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" rel="stylesheet">
+
+    <style>
+        body { 
+            background-color: #f4f6f9; 
+            font-size: 0.9rem; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .table-custom th { 
+            background-color: #f8f9fa !important; 
+            text-align: center; 
+            vertical-align: middle; 
+            color: #495057;
+            font-weight: 600;
+        }
+        .table-custom td { vertical-align: middle; }
+        .btn-green { 
+            background-color: #00a65a; 
+            border-color: #008d4c; 
+            color: white; 
+            transition: all 0.3s;
+        }
+        .btn-green:hover { 
+            background-color: #008d4c; 
+            color: white; 
+            transform: translateY(-1px);
+        }
+        .doctor-info i { width: 20px; text-align: center; color: #6c757d; }
+        div.dataTables_wrapper div.dataTables_filter input { border-radius: 20px; padding-left: 15px; }
+        .card-header-custom { background-color: white; border-bottom: 2px solid #00a65a; }
+        
+        /* Ajuste para la tabla dentro del modal */
+        #modal-table-body td { vertical-align: middle; }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid mt-4 mb-5">
+    <div class="card shadow-sm border-0">
+        <div class="card-header card-header-custom d-flex justify-content-between align-items-center py-3">
+            <h5 class="mb-0 text-dark fw-bold"><i class="bi bi-calendar-check text-success"></i> Gestión de Turnos Médicos</h5>
+            <button class="btn btn-green btn-sm px-3 rounded-pill"><i class="bi bi-plus-lg"></i> Agregar turno</button>
+        </div>
+        <div class="card-body p-4">
+            <table id="tablaMedicos" class="table table-bordered table-hover table-custom w-100 dt-responsive nowrap">
+                <thead>
+                    <tr>
+                        <th data-priority="1">Médico / Detalles</th>
+                        <th>Cant.<br>fichas</th>
+                        <th>Cant.<br>fichas web</th>
+                        <th>Fichas<br>disponibles</th>
+                        <th data-priority="2">Opc.</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="doctor-info" data-order="1">
+                            <i class="bi bi-calendar3"></i> 11/03/2026<br>
+                            <i class="bi bi-person-fill text-primary"></i> <strong class="text-dark">SAMANTHA NICOOL SAN MIGUEL CARO</strong><br>
+                            <i class="bi bi-heart-pulse"></i> Serv.: Medicina General<br>
+                            <i class="bi bi-moon-fill text-secondary"></i> Noche <span class="text-muted ms-2"><i class="bi bi-clock"></i> 20:00 - 23:00</span><br>
+                            <i class="bi bi-hospital"></i> Consultorio.: CONSULTORIO 1
+                        </td>
+                        <td class="text-center fw-bold align-middle">22</td>
+                        <td class="text-center fw-bold align-middle">4</td>
+                        <td class="text-center align-middle">
+                            <span class="badge rounded-pill bg-success fs-6 px-3">12 <i class="bi bi-check-circle-fill ms-1"></i></span>
+                        </td>
+                        <td class="text-center align-middle">
+                            <button class="btn btn-green btn-sm rounded-circle p-2 shadow-sm" onclick="abrirModal(1)" title="Ver pacientes">
+                                <i class="bi bi-arrow-right"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="doctor-info" data-order="2">
+                            <i class="bi bi-calendar3"></i> 11/03/2026<br>
+                            <i class="bi bi-person-fill text-primary"></i> <strong class="text-dark">TEOFILA ROJAS CORTEZ</strong><br>
+                            <i class="bi bi-heart-pulse"></i> Serv.: Odontología<br>
+                            <i class="bi bi-moon-fill text-secondary"></i> Noche <span class="text-muted ms-2"><i class="bi bi-clock"></i> 19:00 - 23:00</span><br>
+                            <i class="bi bi-hospital"></i> Consultorio.: 1
+                        </td>
+                        <td class="text-center fw-bold align-middle">20</td>
+                        <td class="text-center fw-bold align-middle">2</td>
+                        <td class="text-center align-middle">
+                            <span class="badge rounded-pill bg-success fs-6 px-3">19 <i class="bi bi-check-circle-fill ms-1"></i></span>
+                        </td>
+                        <td class="text-center align-middle">
+                            <button class="btn btn-green btn-sm rounded-circle p-2 shadow-sm" onclick="abrirModal(2)" title="Ver pacientes">
+                                <i class="bi bi-arrow-right"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="turnoModal" tabindex="-1" aria-labelledby="turnoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-light border-bottom-0">
+                <div class="w-100" id="modal-header-content">
+                    </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body bg-light pt-0">
+                <div class="d-flex justify-content-start mb-3 mt-2">
+                    <button class="btn btn-light border btn-sm shadow-sm"><i class="bi bi-printer"></i> Imprimir turno</button>
+                </div>
+                
+                <div class="table-responsive bg-white rounded shadow-sm border">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="text-center">Nro</th>
+                                <th class="text-center">Hora</th>
+                                <th>Estado</th>
+                                <th>Tipo</th>
+                                <th>Usuario reserva</th>
+                                <th class="text-center">Op</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modal-table-body">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#tablaMedicos').DataTable({
+            "responsive": true,
+            "language": { "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json" },
+            "ordering": true,
+            "order": [[0, "desc"]], 
+            "columnDefs": [{ "orderable": false, "targets": 4 }]
+        });
+    });
+
+    // Base de datos simulada con 10 pacientes para Samantha
+    const baseDatos = {
+        1: {
+            medico: "SAMANTHA NICOOL SAN MIGUEL CARO",
+            especialidad: "Medicina General", fecha: "11/03/2026", consultorio: "CONSULTORIO 1", fichasUso: "10/22", estadoFicha: "Disponible",
+            pacientes: [
+                { nro: 1, hora: "20:00", estado: "Atendido", estadoDetalle: "Hora llegada: 19:50", tipo: "Presencial", usuarioCi: "212897", usuarioNombre: "JHANET RAMOS PRADO", usuarioNacimiento: "24/02/1990 (36A)", usuarioTelefono: "72077714", usuarioGenero: "Femenino" },
+                { nro: 2, hora: "20:15", estado: "Atendido", estadoDetalle: "Hora llegada: 20:05", tipo: "Web", usuarioCi: "3344556", usuarioNombre: "CARLOS MENDOZA", usuarioNacimiento: "10/05/1985 (40A)", usuarioTelefono: "65011223", usuarioGenero: "Masculino" },
+                { nro: 3, hora: "20:30", estado: "En espera", estadoDetalle: "Paciente en sala", tipo: "Presencial", usuarioCi: "8899112", usuarioNombre: "LUCIA FERNANDEZ", usuarioNacimiento: "15/08/1998 (27A)", usuarioTelefono: "71022334", usuarioGenero: "Femenino" },
+                { nro: 4, hora: "20:45", estado: "En espera", estadoDetalle: "Llegó tarde", tipo: "Web", usuarioCi: "4477889", usuarioNombre: "ROBERTO MAMANI", usuarioNacimiento: "20/03/2005 (21A)", usuarioTelefono: "70055664", usuarioGenero: "Masculino" },
+                { nro: 5, hora: "21:00", estado: "Reprogramado", estadoDetalle: "Fecha: 13/03/2026", tipo: "Presencial", usuarioCi: "1122334", usuarioNombre: "MARCOS TINTAYA", usuarioNacimiento: "01/12/1970 (55A)", usuarioTelefono: "69088776", usuarioGenero: "Masculino" },
+                { nro: 6, hora: "21:15", estado: "Confirmado", estadoDetalle: "Turno Web validado", tipo: "Web", usuarioCi: "9900112", usuarioNombre: "SOFIA ROJAS", usuarioNacimiento: "11/11/1980 (45A)", usuarioTelefono: "63099881", usuarioGenero: "Femenino" },
+                { nro: 7, hora: "21:30", estado: "Confirmado", estadoDetalle: "Turno en ventanilla", tipo: "Presencial", usuarioCi: "5566778", usuarioNombre: "DANIEL CHOQUE", usuarioNacimiento: "04/07/1992 (33A)", usuarioTelefono: "74011225", usuarioGenero: "Masculino" },
+                { nro: 8, hora: "21:45", estado: "Confirmado", estadoDetalle: "Turno en ventanilla", tipo: "Presencial", usuarioCi: "2233445", usuarioNombre: "MARIA LUZ QUISPE", usuarioNacimiento: "18/09/2001 (24A)", usuarioTelefono: "68044556", usuarioGenero: "Femenino" },
+                { nro: 9, hora: "22:00", estado: "Confirmado", estadoDetalle: "Turno Web validado", tipo: "Web", usuarioCi: "7788990", usuarioNombre: "JORGE FLORES", usuarioNacimiento: "22/01/1975 (51A)", usuarioTelefono: "79033445", usuarioGenero: "Masculino" },
+                { nro: 10, hora: "22:15", estado: "Confirmado", estadoDetalle: "Turno en ventanilla", tipo: "Presencial", usuarioCi: "6677889", usuarioNombre: "ANA GABRIELA CONDORI", usuarioNacimiento: "30/10/1995 (30A)", usuarioTelefono: "76022114", usuarioGenero: "Femenino" }
+            ]
+        },
+        2: {
+            medico: "TEOFILA ROJAS CORTEZ",
+            especialidad: "Odontología", fecha: "11/03/2026", consultorio: "1", fichasUso: "1/20", estadoFicha: "Disponible",
+            pacientes: [
+                { nro: 1, hora: "19:30", estado: "Confirmado", estadoDetalle: "Turno Web", tipo: "Web", usuarioCi: "8899223", usuarioNombre: "MARIA ANTONIETA GOMEZ", usuarioNacimiento: "15/05/1985 (40A)", usuarioTelefono: "65012345", usuarioGenero: "Femenino" }
+            ]
+        }
+    };
+
+    const turnoModal = new bootstrap.Modal(document.getElementById('turnoModal'));
+
+    function abrirModal(id) {
+        const datos = baseDatos[id];
+        
+        if(datos) {
+            // Encabezado
+            document.getElementById('modal-header-content').innerHTML = `
+                <div class="row align-items-center">
+                    <div class="col-md-8 col-12 mb-2 mb-md-0">
+                        <h5 class="mb-1 text-dark fw-bold"><i class="bi bi-person-badge text-primary"></i> ${datos.medico}</h5>
+                        <div class="text-muted small">
+                            <span class="me-3"><i class="bi bi-heart-pulse"></i> ${datos.especialidad}</span>
+                            <span class="me-3"><i class="bi bi-calendar3"></i> ${datos.fecha}</span>
+                            <span><i class="bi bi-door-open"></i> Cons.: ${datos.consultorio}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-12 text-md-end text-start">
+                        <div class="fs-5 fw-bold text-dark">${datos.fichasUso} <i class="bi bi-check-circle-fill text-success ms-1"></i></div>
+                        <span class="badge bg-success">${datos.estadoFicha}</span>
+                    </div>
+                </div>
+            `;
+
+            // Cuerpo de la tabla
+            let filas = '';
+            datos.pacientes.forEach(paciente => {
+                let generoIcon = paciente.usuarioGenero === 'Femenino' ? '<i class="bi bi-gender-female text-danger"></i> Fem' : '<i class="bi bi-gender-male text-primary"></i> Masc';
+                
+                let badgeEstado = '';
+                if(paciente.estado === 'Reprogramado') badgeEstado = '<span class="badge bg-danger">Reprogramado</span>';
+                else if(paciente.estado === 'Atendido') badgeEstado = '<span class="badge bg-success">Atendido</span>';
+                else if(paciente.estado === 'En espera') badgeEstado = '<span class="badge bg-warning text-dark">En espera</span>';
+                else badgeEstado = '<span class="badge bg-primary">Confirmado</span>';
+
+                filas += `
+                    <tr>
+                        <td class="text-center fw-bold text-secondary">${paciente.nro}</td>
+                        <td class="text-center"><i class="bi bi-clock text-muted"></i> ${paciente.hora}</td>
+                        <td>
+                            ${badgeEstado}<br>
+                            <small class="text-muted" style="font-size: 0.75rem;">${paciente.estadoDetalle}</small>
+                        </td>
+                        <td><span class="badge bg-light text-dark border">${paciente.tipo}</span></td>
+                        <td style="font-size: 0.85rem;">
+                            <strong>${paciente.usuarioNombre}</strong><br>
+                            <span class="text-muted"><i class="bi bi-person-vcard"></i> CI: ${paciente.usuarioCi} | Nac: ${paciente.usuarioNacimiento}</span><br>
+                            <span class="text-muted"><i class="bi bi-telephone"></i> ${paciente.usuarioTelefono} | ${generoIcon}</span>
+                        </td>
+                        <td class="text-center">
+                            <button class="btn btn-light btn-sm border rounded-circle"><i class="bi bi-three-dots-vertical"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+            document.getElementById('modal-table-body').innerHTML = filas;
+
+            turnoModal.show();
+        }
+    }
+</script>
+
+</body>
+</html>
